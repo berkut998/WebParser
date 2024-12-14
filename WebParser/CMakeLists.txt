@@ -34,36 +34,18 @@ find_package(tbb REQUIRED tbb)
 
 
 set (SOURCE_FILES  
-"Sources/WebParser.cpp" 
-"Sources/WebWorker.cpp"  
-"Sources/SitePatternsLoader.cpp" 
-"Sources/DataSelector.cpp"
+"${CMAKE_CURRENT_SOURCE_DIR}/Sources/WebParser.cpp" 
+"${CMAKE_CURRENT_SOURCE_DIR}/Sources/WebWorker.cpp"  
+"${CMAKE_CURRENT_SOURCE_DIR}/Sources/SitePatternsLoader.cpp" 
+"${CMAKE_CURRENT_SOURCE_DIR}/Sources/DataSelector.cpp"
 )
 
-# Create a static library
-add_library(Adddd SHARED ${SOURCE_FILES})
+set (HEADERS_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Headers/")
 
-# Create a shared library
-#add_library(MySharedLib SHARED ${SOURCE_FILES})
-# Add source to this project's executable.
-#add_executable (WebParser "WebParser.cpp" ${SOURCE_FILES})
+add_subdirectory("executable")
+add_subdirectory("sharedLib")
+add_subdirectory("staticLib")
 
-target_include_directories(Adddd PUBLIC 
-"${CMAKE_CURRENT_SOURCE_DIR}/Headers/"
-)
 
-target_link_libraries(Adddd PRIVATE 
-	CURL::libcurl
-	Boost::headers 
-	Boost::uuid 
-	Boost::beast 
-	Boost::property_tree 
-	Boost::signals2 
-	TBB::tbb 
-)
-
-if (CMAKE_VERSION VERSION_GREATER 3.12)
-  set_property(TARGET Adddd PROPERTY CXX_STANDARD 20)
-endif()
 
 # TODO: Add tests and install targets if needed.

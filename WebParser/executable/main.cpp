@@ -1,12 +1,10 @@
 ﻿// WebParser.cpp : Defines the entry point for the application.
 //
-
-#include "WebParser.h"
-
+#include <iostream>
 using namespace std;
 
 int main()
 {
-	cout << "Hello CMake." << endl;
+	std::cout << "Hello CMake." << std::endl;
 	return 0;
 }
