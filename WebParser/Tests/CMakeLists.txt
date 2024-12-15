@@ -4,6 +4,9 @@ add_executable (dataSelectorTest "dataSelectorTest.cpp" "${WEBPARSER_SOURCE_DIR}
 target_link_libraries(dataSelectorTest PRIVATE Boost::unit_test_framework)
 target_include_directories(dataSelectorTest PRIVATE "${HEADERS_DIR}")
 
+include (CTest)
+enable_testing()
+
 add_test(NAME dataSelectorTest COMMAND dataSelectorTest)
 
 if (WIN32)
