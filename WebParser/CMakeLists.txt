@@ -29,9 +29,10 @@ list(APPEND CMAKE_MODULE_PATH "${FETCHCONTENT_BASE_DIR}/tbb-src/lib/cmake/tbb")
 include(TBBConfig)
 
 find_package(curl)
-find_package(boost REQUIRED  uuid signals2 beast property_tree)
+find_package(boost REQUIRED  uuid signals2 beast property_tree unit_test_framework)
 find_package(tbb REQUIRED tbb)
 
+set(WEBPARSER_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Sources")
 
 set (SOURCE_FILES  
 "${CMAKE_CURRENT_SOURCE_DIR}/Sources/WebParser.cpp" 
@@ -40,12 +41,12 @@ set (SOURCE_FILES
 "${CMAKE_CURRENT_SOURCE_DIR}/Sources/DataSelector.cpp"
 )
 
-set (HEADERS_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Headers/")
+set (HEADERS_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Headers")
 
 add_subdirectory("executable")
 add_subdirectory("sharedLib")
 add_subdirectory("staticLib")
-
+add_subdirectory("Tests")
 
 
 # TODO: Add tests and install targets if needed.

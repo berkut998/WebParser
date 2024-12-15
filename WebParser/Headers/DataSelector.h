@@ -1,7 +1,5 @@
 #pragma once
 #include <string>
-#include "MemoryStruct.h"
-#include "SitePatterns.h"
 #include <algorithm>
 #include <cctype>
 #include <vector>

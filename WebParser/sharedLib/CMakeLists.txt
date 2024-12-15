@@ -19,8 +19,7 @@ target_link_libraries(WebParserSharedLib PRIVATE
 	TBB::tbb 
 )
 
-if (CMAKE_VERSION VERSION_GREATER 3.12)
-  set_property(TARGET WebParserSharedLib PROPERTY CXX_STANDARD 20)
-endif()
+target_compile_features(WebParserSharedLib PRIVATE cxx_std_17)
+
 
 # TODO: Add tests and install targets if needed.
