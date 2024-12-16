@@ -3,7 +3,7 @@
 #include <boost/test/unit_test.hpp>
 #include "DataSelector.h"
 
-using namespace WebPar;
+using namespace DataSelect;
 
 /*
 		

@@ -34,7 +34,7 @@ void WebParser::getSubCategory(string url)
 {
 	WebWorker webWorker = WebWorker("Mozilla / 5.0 (Windows NT 6.1; WOW64; rv:57.0) Gecko / 20100101 Firefox / 57.0");
 	MemoryStruct mem = webWorker.getWebPage(url.c_str());
-	DataSelector dataSelector;
+	DataSelect::DataSelector dataSelector;
 	std::vector<std::string> categories = dataSelector.selectDataFromHTML(datSelRul.getRule("categories"), std::string(mem.memory));
 	std::vector<std::string> categoriesName = dataSelector.selectDataFromHTML(datSelRul.getRule("categoryName"), std::string(mem.memory));
 	if (categories.size() != categoriesName.size())
@@ -106,7 +106,7 @@ std::string WebParser::generateURL(std::string startUrl)
 int WebParser::getNumberOfPages(std::string webPage)
 {
 	int pageCount = 1;
-	DataSelector dataSelector;
+	DataSelect::DataSelector dataSelector;
 	std::vector<std::string> allPages = dataSelector.selectDataFromHTML(datSelRul.getRule("Pagination"), webPage);
 	bool pageOptionIsSet = true;
 	if (datSelRul.ruleExist("PageStart") == 1)
@@ -121,7 +121,7 @@ int WebParser::getNumberOfPages(std::string webPage)
 
 bool WebParser::setPageOption(std::string webPage)
 {
-	DataSelector dataSelector;
+	DataSelect::DataSelector dataSelector;
 	std::vector<std::string> pageOption = dataSelector.selectDataFromHTML(datSelRul.getRule("PageStart"), webPage);
 	if (pageOption.size() == 0)
 	{
@@ -244,7 +244,7 @@ bool  WebParser::getProductsRefPriceCard(std::vector<std::string>& refs, std::ve
 {
 	bool productsWasFound = false;
 	std::string productCardBlock = getProductCardBlock(webPage);
-	DataSelector dataSelector = DataSelector();
+	DataSelect::DataSelector dataSelector = DataSelect::DataSelector();
 	std::vector<std::string> productCards = dataSelector.selectDataFromHTML(datSelRul.getRule("productCard"), productCardBlock);
 	if (productCards.size() > 0)
 	{
@@ -287,7 +287,7 @@ std::string WebParser::getProductCardBlock(std::string webPage)
 	std::string productCardBlock = webPage;
 	if (datSelRul.ruleExist("productCardBlock") != 0)
 	{
-		DataSelector dataSelector = DataSelector();
+		DataSelect::DataSelector dataSelector = DataSelect::DataSelector();
 		std::vector<std::string> productCards = dataSelector.selectDataFromHTML(datSelRul.getRule("productCardBlock"), webPage);
 		if (productCards.size() != 0)
 			productCardBlock = productCards.back();
@@ -396,7 +396,7 @@ std::vector<ProductData> WebParser::getNewProducts(std::vector<std::string> refs
 ProductData WebParser::getProductData(WebWorker* webWorker, std::string productUrl, std::string pathToImage)
 {
 	MemoryStruct mem = webWorker->getWebPage(productUrl.c_str());
-	DataSelector dataSelector;
+	DataSelect::DataSelector dataSelector;
 	ProductData product;
 	if (mem.size == 0)
 	{
