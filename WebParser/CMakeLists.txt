@@ -37,7 +37,6 @@ set(WEBPARSER_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Sources")
 set (SOURCE_FILES  
 "${CMAKE_CURRENT_SOURCE_DIR}/Sources/WebParser.cpp" 
 "${CMAKE_CURRENT_SOURCE_DIR}/Sources/WebWorker.cpp"  
-"${CMAKE_CURRENT_SOURCE_DIR}/Sources/SitePatternsLoader.cpp" 
 "${CMAKE_CURRENT_SOURCE_DIR}/Sources/DataSelector.cpp"
 )
 

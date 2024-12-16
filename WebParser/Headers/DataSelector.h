@@ -4,7 +4,7 @@
 #include <cctype>
 #include <vector>
 
-namespace WebPar
+namespace DataSelect
 {
 	class DataSelector final
 	{

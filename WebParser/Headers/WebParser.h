@@ -25,11 +25,9 @@
 #include "tbb/blocked_range.h"
 #include "tbb/spin_mutex.h"
 
-#include "SitePatterns.h"
 #include "ProductData.h"
 #include "WebWorker.h"
 #include "DataSelector.h"
-#include "SitePatternsLoader.h"
 #include "DataSelectorRules.h"
 //#include "ParsingStatus.h"
 
