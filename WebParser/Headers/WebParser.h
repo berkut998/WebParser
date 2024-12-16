@@ -30,6 +30,7 @@
 #include "WebWorker.h"
 #include "DataSelector.h"
 #include "SitePatternsLoader.h"
+#include "DataSelectorRules.h"
 //#include "ParsingStatus.h"
 
 //#include "ParsedData.h"
@@ -93,13 +94,12 @@ namespace
 		/// in percent (15%)
 		/// </summary>
 		int _margin = 0;
-		SitePatterns patterns;
 		Site _site = Site::unknown;
 		std::string domenName = "https://agrosemfond.ru";
 		bool useParallel = false;
 		const char* sqliteDataBaseFileName = "ProductDataBase.db";
 		std::string tmpFolder = "";
-
+		DataSelect::DataSelectorRules datSelRul;
 		tbb::spin_mutex mtx;
 
 		queue<int> failProdPage;

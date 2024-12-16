@@ -3,8 +3,7 @@
 
 WebParser::WebParser(std::string site)
 {
-	SitePatternsLoader patternsLoader;
-	patterns = patternsLoader.load(site);
+	datSelRul.load(site);
 	//ParsingStatus::getInstance().clearData();
 	domenName = "https://" + site;
 	_site = getSiteId(site);
@@ -14,8 +13,7 @@ WebParser::WebParser(std::string site)
 WebParser::WebParser(int margin, std::string site)
 {
 	_margin = margin;
-	SitePatternsLoader patternsLoader;
-	patterns = patternsLoader.load(site);
+	datSelRul.load(site);
 	//ParsingStatus::getInstance().clearData();
 	_site = getSiteId(site);
 	domenName = "https://" + site;
@@ -37,8 +35,8 @@ void WebParser::getSubCategory(string url)
 	WebWorker webWorker = WebWorker("Mozilla / 5.0 (Windows NT 6.1; WOW64; rv:57.0) Gecko / 20100101 Firefox / 57.0");
 	MemoryStruct mem = webWorker.getWebPage(url.c_str());
 	DataSelector dataSelector;
-	std::vector<std::string> categories = dataSelector.selectDataFromHTML(patterns.parseSetting["categories"], std::string(mem.memory));
-	std::vector<std::string> categoriesName = dataSelector.selectDataFromHTML(patterns.parseSetting["categoryName"], std::string(mem.memory));
+	std::vector<std::string> categories = dataSelector.selectDataFromHTML(datSelRul.getRule("categories"), std::string(mem.memory));
+	std::vector<std::string> categoriesName = dataSelector.selectDataFromHTML(datSelRul.getRule("categoryName"), std::string(mem.memory));
 	if (categories.size() != categoriesName.size())
 		//ErrorHandler::setErrorMessage(u8"Не удалось выбрать все категории");
 	for (size_t i = 0; i < categories.size(); i++)
@@ -99,8 +97,8 @@ std::vector<ProductData> WebParser::parseAllPages(std::string categoryURL, std::
 
 std::string WebParser::generateURL(std::string startUrl)
 {
-	if (patterns.parseSetting.count("productQuantityOnPage") == 1)
-		startUrl = startUrl + '?' + patterns.parseSetting["productQuantityOnPage"].back().back() + "&";
+	if (datSelRul.ruleExist("productQuantityOnPage") == 1)
+		startUrl = startUrl + '?' + datSelRul.getRule("productQuantityOnPage").back().back() + "&";
 	else
 		startUrl = startUrl + '?';
 	return startUrl;
@@ -109,9 +107,9 @@ int WebParser::getNumberOfPages(std::string webPage)
 {
 	int pageCount = 1;
 	DataSelector dataSelector;
-	std::vector<std::string> allPages = dataSelector.selectDataFromHTML(patterns.parseSetting["Pagination"], webPage);
+	std::vector<std::string> allPages = dataSelector.selectDataFromHTML(datSelRul.getRule("Pagination"), webPage);
 	bool pageOptionIsSet = true;
-	if (patterns.parseSetting.count("PageStart") == 1)
+	if (datSelRul.ruleExist("PageStart") == 1)
 		pageOptionIsSet = setPageOption(webPage);
 	if (allPages.size() != 0 && pageOptionIsSet)
 	{
@@ -124,7 +122,7 @@ int WebParser::getNumberOfPages(std::string webPage)
 bool WebParser::setPageOption(std::string webPage)
 {
 	DataSelector dataSelector;
-	std::vector<std::string> pageOption = dataSelector.selectDataFromHTML(patterns.parseSetting["PageStart"], webPage);
+	std::vector<std::string> pageOption = dataSelector.selectDataFromHTML(datSelRul.getRule("PageStart"), webPage);
 	if (pageOption.size() == 0)
 	{
 		//ErrorHandler::setErrorMessage("Cann`t get PageStart. Supossed what only 1 page exist in this category.");
@@ -132,7 +130,7 @@ bool WebParser::setPageOption(std::string webPage)
 	}
 	std::vector<std::vector<std::string>> pageOptionsVec;
 	pageOptionsVec.push_back(pageOption);
-	patterns.parseSetting["Page"] = pageOptionsVec;
+	datSelRul.getRule("Page") = pageOptionsVec;
 	return true;
 }
 
@@ -144,7 +142,7 @@ std::vector<ProductData> WebParser::startParsePage(int pageIndex, WebWorker* web
 	std::string pageURL = categoryURL;
 	if (pageIndex > 1)
 	{
-		pageURL = categoryURL + patterns.parseSetting["Page"].back().back() + strPageIndex;
+		pageURL = categoryURL + datSelRul.getRule("Page").back().back() + strPageIndex;
 		if (urlParamIsValid(pageURL) == false)
 			return currPageProducts;
 		localMem = webWorker->getWebPage(pageURL.c_str());
@@ -247,19 +245,19 @@ bool  WebParser::getProductsRefPriceCard(std::vector<std::string>& refs, std::ve
 	bool productsWasFound = false;
 	std::string productCardBlock = getProductCardBlock(webPage);
 	DataSelector dataSelector = DataSelector();
-	std::vector<std::string> productCards = dataSelector.selectDataFromHTML(patterns.parseSetting["productCard"], productCardBlock);
+	std::vector<std::string> productCards = dataSelector.selectDataFromHTML(datSelRul.getRule("productCard"), productCardBlock);
 	if (productCards.size() > 0)
 	{
 		for (size_t i = 0; i < productCards.size(); i++)
 		{
 			productsWasFound = true;
-			std::vector<std::string> refsTmp = dataSelector.selectDataFromHTML(patterns.parseSetting["ref"], productCards[i]);
+			std::vector<std::string> refsTmp = dataSelector.selectDataFromHTML(datSelRul.getRule("ref"), productCards[i]);
 			if (refsTmp.size() != 1)
 				;//ErrorHandler::setErrorMessage("Canno`t get product ref from card");
-			std::vector<std::string> pricesTmp = dataSelector.selectDataFromHTML(patterns.parseSetting["price_catalog"], productCards[i]);
-			if (patterns.parseSetting.count("notInStock") != 0)
+			std::vector<std::string> pricesTmp = dataSelector.selectDataFromHTML(datSelRul.getRule("price_catalog"), productCards[i]);
+			if (datSelRul.ruleExist("notInStock") != 0)
 			{
-				std::vector<std::string> notInStock = dataSelector.selectDataFromHTML(patterns.parseSetting["notInStock"], productCards[i]);
+				std::vector<std::string> notInStock = dataSelector.selectDataFromHTML(datSelRul.getRule("notInStock"), productCards[i]);
 				if (notInStock.size() >= 1)
 					continue;
 			}
@@ -274,8 +272,8 @@ bool  WebParser::getProductsRefPriceCard(std::vector<std::string>& refs, std::ve
 	else
 	{
 		//ErrorHandler::setErrorMessage("Canno`t get product cards");
-		refs = dataSelector.selectDataFromHTML(patterns.parseSetting["ref"], webPage);
-		prices = dataSelector.selectDataFromHTML(patterns.parseSetting["price_catalog"], webPage);
+		refs = dataSelector.selectDataFromHTML(datSelRul.getRule("ref"), webPage);
+		prices = dataSelector.selectDataFromHTML(datSelRul.getRule("price_catalog"), webPage);
 		if (refs.size() > 0)
 			productsWasFound = true;
 	}
@@ -287,10 +285,10 @@ bool  WebParser::getProductsRefPriceCard(std::vector<std::string>& refs, std::ve
 std::string WebParser::getProductCardBlock(std::string webPage)
 {
 	std::string productCardBlock = webPage;
-	if (patterns.parseSetting.count("productCardBlock") != 0)
+	if (datSelRul.ruleExist("productCardBlock") != 0)
 	{
 		DataSelector dataSelector = DataSelector();
-		std::vector<std::string> productCards = dataSelector.selectDataFromHTML(patterns.parseSetting["productCardBlock"], webPage);
+		std::vector<std::string> productCards = dataSelector.selectDataFromHTML(datSelRul.getRule("productCardBlock"), webPage);
 		if (productCards.size() != 0)
 			productCardBlock = productCards.back();
 		else
@@ -405,28 +403,28 @@ ProductData WebParser::getProductData(WebWorker* webWorker, std::string productU
 		//ErrorHandler::setErrorMessage("Canno`t get product page");
 		return product;
 	}	
-	std::vector<std::string>productIsNotAvailable = dataSelector.selectDataFromHTML(patterns.parseSetting["productIsNotAvailable"], std::string(mem.memory));
+	std::vector<std::string>productIsNotAvailable = dataSelector.selectDataFromHTML(datSelRul.getRule("productIsNotAvailable"), std::string(mem.memory));
 	if (productIsNotAvailable.size() > 0)
 		return product;
-	product.name = dataSelector.selectDataFromHTML(patterns.parseSetting["name"], std::string(mem.memory)).back();
-	std::vector<std::string> strPrices = dataSelector.selectDataFromHTML(patterns.parseSetting["price"], std::string(mem.memory));
+	product.name = dataSelector.selectDataFromHTML(datSelRul.getRule("name"), std::string(mem.memory)).back();
+	std::vector<std::string> strPrices = dataSelector.selectDataFromHTML(datSelRul.getRule("price"), std::string(mem.memory));
 	if (strPrices.size() == 0)
 	{
 		//ErrorHandler::setErrorMessage("Canno`t get product price");
 		return product;
 	}
 	std::string strPrice = strPrices.back();
-	vector<std::string> protuctIds = dataSelector.selectDataFromHTML(patterns.parseSetting["productID"], std::string(mem.memory));
+	vector<std::string> protuctIds = dataSelector.selectDataFromHTML(datSelRul.getRule("productID"), std::string(mem.memory));
 	if (protuctIds.size() == 0)
 	{
 		//ErrorHandler::setErrorMessage("Canno`t get product id");
 		return product;
 	}
 	product.product_id = protuctIds.back();
-	vector<string> manufacturers = dataSelector.selectDataFromHTML(patterns.parseSetting["manufacturer"], std::string(mem.memory));
+	vector<string> manufacturers = dataSelector.selectDataFromHTML(datSelRul.getRule("manufacturer"), std::string(mem.memory));
 	if (!empty(manufacturers))
 		product.manufacturer = manufacturers.back();
-	std::vector<std::string> images = dataSelector.selectDataFromHTML(patterns.parseSetting["image"], std::string(mem.memory));
+	std::vector<std::string> images = dataSelector.selectDataFromHTML(datSelRul.getRule("image"), std::string(mem.memory));
 	if (images.size() == 0)
 	{
 		//ErrorHandler::setErrorMessage("Canno`t get product image url");
@@ -447,7 +445,7 @@ ProductData WebParser::getProductData(WebWorker* webWorker, std::string productU
 	//webWorker->download_file(imageURL.c_str(), pathToImage.c_str());
 
 	product.url = productUrl;
-	std::vector<std::string> descriptions = dataSelector.selectDataFromHTML(patterns.parseSetting["description"], std::string(mem.memory));
+	std::vector<std::string> descriptions = dataSelector.selectDataFromHTML(datSelRul.getRule("description"), std::string(mem.memory));
 	for (size_t i = 0; i < descriptions.size(); i++)
 	{
 		product.description += descriptions[i];
