@@ -38,6 +38,7 @@
 namespace
 {
 	using namespace std;
+	using namespace Web;
 	class WebParser final
 	{
 
