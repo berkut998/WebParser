@@ -6,7 +6,7 @@
 была глобальная позиция
 конечные значение были динамические
 */
-namespace DataSelect
+namespace WP
 {
 	std::string DataSelector::selectInnerValue(std::string _from, std::string _to, std::string_view text)
 	{

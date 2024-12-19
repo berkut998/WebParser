@@ -1,5 +1,8 @@
 #pragma once
-struct MemoryStruct {
-    char* memory;
-    size_t size;
-};
+namespace WP
+{
+    struct MemoryStruct {
+        char* memory;
+        size_t size;
+    };
+}

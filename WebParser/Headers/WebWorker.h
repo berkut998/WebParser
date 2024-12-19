@@ -9,7 +9,7 @@
 #include <vector>
 //#include "ErrorHandler.h"
 
-namespace Web {
+namespace WP {
 	class WebWorker final
 	{
 	public:

@@ -113,7 +113,7 @@ class="request_show_modal)";
 	fs << textSettings;
 	fs.close();
 
-	DataSelectorRules dataSelectRules = DataSelectorRules();
+	WP::DataSelectorRules dataSelectRules = WP::DataSelectorRules();
 	dataSelectRules.load("testSitePatterns.com");
 	BOOST_TEST(dataSelectRules.getRule("ref")[0][0] == "favorite ajax_trigger");
 	BOOST_TEST(dataSelectRules.getRule("ref")[0][1] == "<a href=\"");

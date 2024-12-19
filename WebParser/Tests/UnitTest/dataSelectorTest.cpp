@@ -3,7 +3,7 @@
 #include <boost/test/unit_test.hpp>
 #include "DataSelector.h"
 
-using namespace DataSelect;
+using namespace WP;
 
 /*
 		
@@ -17,7 +17,7 @@ using namespace DataSelect;
 
 BOOST_AUTO_TEST_CASE(test_removeHTMLTags)
 {
-	DataSelector ds = DataSelector();
+	WP::DataSelector ds = WP::DataSelector();
 	std::string clearStr = ds.removeHTMLTags("<h1>a<h1>");
 	BOOST_TEST(clearStr == "\na\n");
 	clearStr = ds.removeHTMLTags("<h1>a<h1><>");
@@ -32,7 +32,7 @@ BOOST_AUTO_TEST_CASE(test_removeHTMLTags)
 
 BOOST_AUTO_TEST_CASE(test_removeDoubleSpacesAndLF)
 {
-	DataSelector ds = DataSelector();
+	WP::DataSelector ds = WP::DataSelector();
 	std::string clearStr = ds.removeDoubleSpacesAndLF("     a\n\n\n\n\n\n");
 	BOOST_TEST(clearStr == " a\n");
 	clearStr = ds.removeDoubleSpacesAndLF(" \n \n \n \n");
@@ -43,7 +43,7 @@ BOOST_AUTO_TEST_CASE(test_removeDoubleSpacesAndLF)
 
 BOOST_AUTO_TEST_CASE(test_removeDublicateRow)
 {
-	DataSelector ds = DataSelector();
+	WP::DataSelector ds = WP::DataSelector();
 	std::string  clearStr = ds.removeDublicateRow("aaa\naaa\naaa\nbbb");
 	BOOST_TEST(clearStr == "aaa\nbbb");
 }

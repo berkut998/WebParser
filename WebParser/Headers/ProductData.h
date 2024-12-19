@@ -1,5 +1,7 @@
 #pragma once
 #include <string>
+namespace WP
+{
 	class ProductData final
 	{
 	public:
@@ -15,4 +17,6 @@
 		int category_id = 0;
 		bool stock_status = true;
 	};
+}
+
 

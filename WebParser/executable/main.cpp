@@ -55,8 +55,8 @@ int main(int argc, char* argv[])
 	{
 		if (validateArguments(argsMap))
 		{
-			parser::WebParser webParser = parser::WebParser(argsMap["file"]);
-			std::vector<ProductData> products = webParser.parseAllPages(argsMap["url"]);
+			WP::WebParser webParser = WP::WebParser(argsMap["file"]);
+			std::vector<WP::ProductData> products = webParser.parseAllPages(argsMap["url"]);
 			std::cout << "found next products:" << std::endl;
 			for (auto& product:products)
 			{

@@ -1,5 +1,5 @@
 ﻿#include "WebWorker.h"
-namespace Web {
+namespace WP {
 
     WebWorker::WebWorker(std::string userAgent, bool setCookies)
     {

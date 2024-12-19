@@ -4,7 +4,7 @@
 #include <cctype>
 #include <vector>
 
-namespace DataSelect
+namespace WP
 {
 	class DataSelector final
 	{

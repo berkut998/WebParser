@@ -35,11 +35,9 @@
 //#include "ErrorHandler.h"
 //#include "SQLiteDataBase.h"
 
-namespace parser
+namespace WP
 {
 	using namespace std;
-	using namespace Web;
-	using namespace DataSelect;
 	class WebParser final
 	{
 

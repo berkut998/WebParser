@@ -4,7 +4,8 @@
 #include <fstream>
 #include <vector>
 
-
+namespace WP
+{
 	class DataSelectorRules final
 	{
 
@@ -26,10 +27,12 @@
 		/// <param name="ruleName"> - name of rule</param>
 		/// <returns></returns>
 		bool ruleExist(std::string ruleName);
-		
+
 	private:
-		std::unordered_map<std::string,std::vector<std::vector<std::string>>> rules;
+		std::unordered_map<std::string, std::vector<std::vector<std::string>>> rules;
 		bool validate();
 
 	};
+}
+	
 
