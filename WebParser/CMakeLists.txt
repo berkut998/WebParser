@@ -5,6 +5,10 @@
 
 include(FetchContent)
 
+#SSL Windows for curl
+set(USE_WINDOWS_SSPI ON)
+set(USE_SCHANNEL ON)
+
 FetchContent_Declare(
   curl
   URL https://curl.se/download/curl-8.5.0.tar.gz
@@ -25,7 +29,11 @@ FetchContent_Declare(
   DOWNLOAD_EXTRACT_TIMESTAMP true
   OVERRIDE_FIND_PACKAGE # this one
 )
+
 list(APPEND CMAKE_MODULE_PATH "${FETCHCONTENT_BASE_DIR}/tbb-src/lib/cmake/tbb")
+#useless
+list(APPEND CMAKE_PREFIX_PATH  "${FETCHCONTENT_BASE_DIR}/curl-src/CMake")
+
 include(TBBConfig)
 
 find_package(curl)
@@ -38,6 +46,7 @@ set (SOURCE_FILES
 "${CMAKE_CURRENT_SOURCE_DIR}/Sources/WebParser.cpp" 
 "${CMAKE_CURRENT_SOURCE_DIR}/Sources/WebWorker.cpp"  
 "${CMAKE_CURRENT_SOURCE_DIR}/Sources/DataSelector.cpp"
+"${CMAKE_CURRENT_SOURCE_DIR}/Sources/DataSelectorRules.cpp"
 )
 
 set (HEADERS_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Headers")
@@ -45,7 +54,7 @@ set (HEADERS_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Headers")
 add_subdirectory("executable")
 add_subdirectory("sharedLib")
 add_subdirectory("staticLib")
-add_subdirectory("Tests")
+add_subdirectory("Tests/UnitTest")
 
 
 # TODO: Add tests and install targets if needed.

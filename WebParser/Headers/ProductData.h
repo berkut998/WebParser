@@ -1,6 +1,5 @@
 #pragma once
 #include <string>
-namespace {
 	class ProductData final
 	{
 	public:
@@ -16,5 +15,4 @@ namespace {
 		int category_id = 0;
 		bool stock_status = true;
 	};
-}
 

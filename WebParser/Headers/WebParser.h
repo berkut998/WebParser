@@ -35,10 +35,11 @@
 //#include "ErrorHandler.h"
 //#include "SQLiteDataBase.h"
 
-namespace
+namespace parser
 {
 	using namespace std;
 	using namespace Web;
+	using namespace DataSelect;
 	class WebParser final
 	{
 
@@ -53,11 +54,10 @@ namespace
 		};
 
 		WebParser(std::string site);
-		WebParser(int margin, std::string site);
 
 		void getSubCategory(string url);
 		void parseCategories(std::map<std::string, std::string>);
-		std::vector<ProductData> parseAllPages(std::string categoryURL, std::string categoryName);
+		std::vector<ProductData> parseAllPages(std::string categoryURL);
 		std::vector<ProductData> parsePage(std::string webPage, std::string categoryName, std::string pageNumber);
 		void cleanUpTMPFolder();
 		// add here try catch because it critical for special product
@@ -97,7 +97,7 @@ namespace
 		bool useParallel = false;
 		const char* sqliteDataBaseFileName = "ProductDataBase.db";
 		std::string tmpFolder = "";
-		DataSelect::DataSelectorRules datSelRul;
+		DataSelectorRules datSelRul;
 		tbb::spin_mutex mtx;
 
 		queue<int> failProdPage;

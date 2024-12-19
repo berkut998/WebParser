@@ -1,7 +1,7 @@
 ﻿#include "WebWorker.h"
 namespace Web {
 
-    WebWorker::WebWorker(std::string userAgent, bool setCookies = true)
+    WebWorker::WebWorker(std::string userAgent, bool setCookies)
     {
         curl = curl_easy_init();
         if (setCookies == true)

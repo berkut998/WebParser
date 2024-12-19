@@ -13,7 +13,7 @@ namespace Web {
 	class WebWorker final
 	{
 	public:
-		WebWorker(std::string userAgent, bool setCookies);
+		WebWorker(std::string userAgent, bool setCookies = true);
 		~WebWorker();
 		MemoryStruct getWebPage(const char* url);
 		bool download_file(const char* url, const char* filename);

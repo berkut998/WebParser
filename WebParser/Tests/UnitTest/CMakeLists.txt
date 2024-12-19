@@ -1,5 +1,5 @@
 
-
+project(UINT_TEST)
 #DataSelector tests
 add_executable (dataSelectorTest "dataSelectorTest.cpp" "${WEBPARSER_SOURCE_DIR}/DataSelector.cpp")
 target_link_libraries(dataSelectorTest PRIVATE Boost::unit_test_framework)
@@ -16,7 +16,7 @@ if (WIN32)
 endif ()
 
 #DataSelectorRule tests
-add_executable (dataSelectorRuleTest "dataSelectorRulesTest.cpp" )
+add_executable (dataSelectorRuleTest "dataSelectorRulesTest.cpp"   "${WEBPARSER_SOURCE_DIR}/DataSelectorRules.cpp")
 target_link_libraries(dataSelectorRuleTest PRIVATE Boost::unit_test_framework)
 target_include_directories(dataSelectorRuleTest PRIVATE "${HEADERS_DIR}")
 target_compile_features(dataSelectorRuleTest PRIVATE cxx_std_17)
