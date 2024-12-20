@@ -39,8 +39,7 @@ namespace WP {
         curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
         curlCode = curl_easy_perform(curl);
         if (curlCode != CURLE_OK) {
-            /* ErrorHandler::setErrorMessage((stderr, "curl_easy_perform() failed: %s\n",
-                  curl_easy_strerror(curlCode)));*/
+            std::cerr << "curl_easy_perform() failed: %s\n" <<  curl_easy_strerror(curlCode) << std::endl;
         }
         else {
             printf("%lu bytes retrieved\n", (unsigned long)chunk.size);
@@ -80,7 +79,6 @@ namespace WP {
             long res_code = 0;
             curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &res_code);
             std::cerr << code1 + " " + std::to_string(res_code) << std::endl;
-            //ErrorHandler::setErrorMessage(code1 + " " + std::to_string(res_code));
         }
         else {
             printf("%lu bytes retrieved\n", (unsigned long)chunk.size);
@@ -140,7 +138,7 @@ namespace WP {
             fclose(stream);
             std::string code1 = std::string(curl_easy_strerror(curlCode));
             curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &res_code);
-            //ErrorHandler::setErrorMessage( "Tried download image error:" + code1 + " " + std::to_string(res_code));
+            std::cerr << "Tried download image error:" + code1 + " " + std::to_string(res_code) << std::endl;
             return false;
         }
         if (stream)
