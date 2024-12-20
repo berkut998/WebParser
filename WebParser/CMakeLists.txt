@@ -55,6 +55,7 @@ add_subdirectory("executable")
 add_subdirectory("sharedLib")
 add_subdirectory("staticLib")
 add_subdirectory("Tests/UnitTest")
+add_subdirectory("Tests/IntegrationalTest")
 
 
 # TODO: Add tests and install targets if needed.
