@@ -86,18 +86,6 @@ namespace WP
 		return true;
 	}
 
-	bool DataSelector::ruleExist(std::string ruleName)
-	{
-		if (rules.count(ruleName) > 1)
-			return true;
-		return false;
-
-	}
-
-
-
-
-
 	std::string DataSelector::selectInnerValue(const std::string from, const std::string to, const std::string_view text)
 	{
 		size_t innerTextStart = text.find(from, currPosition);
