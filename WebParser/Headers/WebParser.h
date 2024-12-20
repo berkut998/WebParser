@@ -28,10 +28,6 @@
 #include "ProductData.h"
 #include "WebWorker.h"
 #include "DataSelector.h"
-//#include "ParsingStatus.h"
-
-//#include "ParsedData.h"
-//#include "ErrorHandler.h"
 //#include "SQLiteDataBase.h"
 
 namespace WP
@@ -57,7 +53,6 @@ namespace WP
 		std::vector<ProductData> parseAllPages(std::string categoryURL);
 		std::vector<ProductData> parsePage(std::string webPage, std::string categoryName, std::string pageNumber);
 		void cleanUpTMPFolder();
-		// add here try catch because it critical for special product
 
 
 	private:

@@ -20,7 +20,6 @@ namespace WP
 		std::vector<std::string> DataSelector::selectDataFromHTML(const std::string &ruleName, const std::string_view text);
 
 	private:
-		bool ruleExist(const std::string ruleName);
 		static bool validateRules(std::unordered_map<std::string, std::vector<std::vector<std::string>>> rules);
 		std::string selectInnerValue(const std::string from, const std::string to, const std::string_view text);
 		std::string selectTags(std::vector<std::string> tags, std::string_view text);

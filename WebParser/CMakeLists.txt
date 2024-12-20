@@ -30,15 +30,31 @@ FetchContent_Declare(
   OVERRIDE_FIND_PACKAGE # this one
 )
 
+FetchContent_Declare(
+  tbb
+  URL https://github.com/uxlfoundation/oneTBB/releases/download/v2022.0.0/oneapi-tbb-2022.0.0-win.zip
+  DOWNLOAD_EXTRACT_TIMESTAMP true
+  OVERRIDE_FIND_PACKAGE # this one
+)
+
+FetchContent_Declare(
+  SQLite3
+  URL https://sqlite.org/2024/sqlite-amalgamation-3470200.zip
+  DOWNLOAD_EXTRACT_TIMESTAMP true
+  OVERRIDE_FIND_PACKAGE # this one
+)
+
 list(APPEND CMAKE_MODULE_PATH "${FETCHCONTENT_BASE_DIR}/tbb-src/lib/cmake/tbb")
-#useless
-list(APPEND CMAKE_PREFIX_PATH  "${FETCHCONTENT_BASE_DIR}/curl-src/CMake")
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmakeExternalLibFind")
+message(STATUS  "${CMAKE_CURRENT_SOURCE_DIR}/cmakeExternalLibFind")
 
 include(TBBConfig)
+include(FindSQLite3)
 
 find_package(curl)
 find_package(boost REQUIRED  uuid signals2 beast property_tree unit_test_framework asio)
 find_package(tbb REQUIRED tbb)
+find_package(SQLite3)
 
 set(WEBPARSER_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Sources")
 
