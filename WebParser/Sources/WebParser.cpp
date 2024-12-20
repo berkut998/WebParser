@@ -193,14 +193,14 @@ namespace WP
 
 		//hard for reading code need refactoring
 		std::vector<ProductData> allProductWithoutImage = newProducts;
-		for (size_t i = 0; i < oldProductsWitoutImage.size(); i++)
-			allProductWithoutImage.push_back(oldProductsWitoutImage[i]);
+		for (const auto& product:oldProductsWitoutImage)
+			allProductWithoutImage.push_back(product);
 		downloadAllImages(&webWorker, refs, allProductWithoutImage, pathToImage);
 		newProducts = updateImagePathDataInNewProduct(newProducts, allProductWithoutImage);
 		//addNewProducts(refs, newProducts);
 		std::vector<ProductData> allProducts = allProductWithoutImage;
-		for (size_t i = 0; i < oldProductWithImage.size(); i++)
-			allProducts.push_back(oldProductWithImage[i]);
+		for (const auto& product : oldProductsWitoutImage)
+			allProducts.push_back(product);
 		if (allProducts.size() == 0 && productsWasFound == false)
 			
 			;//ErrorHandler::setErrorMessage("can`t parse page:" + pageNumber + " something went wrong");
@@ -241,16 +241,16 @@ namespace WP
 		std::vector<std::string> productCards = dataSelector.selectDataFromHTML("productCard", productCardBlock);
 		if (productCards.size() > 0)
 		{
-			for (size_t i = 0; i < productCards.size(); i++)
+			for (const auto& productCard: productCards)
 			{
 				productsWasFound = true;
-				std::vector<std::string> refsTmp = dataSelector.selectDataFromHTML("ref", productCards[i]);
+				std::vector<std::string> refsTmp = dataSelector.selectDataFromHTML("ref", productCard);
 				if (refsTmp.size() != 1)
 					;//ErrorHandler::setErrorMessage("Canno`t get product ref from card");
-				std::vector<std::string> pricesTmp = dataSelector.selectDataFromHTML("price_catalog", productCards[i]);
+				std::vector<std::string> pricesTmp = dataSelector.selectDataFromHTML("price_catalog", productCard);
 				if (parseRules.count("notInStock") != 0)
 				{
-					std::vector<std::string> notInStock = dataSelector.selectDataFromHTML("notInStock", productCards[i]);
+					std::vector<std::string> notInStock = dataSelector.selectDataFromHTML("notInStock", productCard);
 					if (notInStock.size() >= 1)
 						continue;
 				}
@@ -270,8 +270,8 @@ namespace WP
 			if (refs.size() > 0)
 				productsWasFound = true;
 		}
-		for (size_t i = 0; i < refs.size(); i++)
-			refs[i] = domenName + refs[i];
+		for (auto& ref:refs)
+			ref += domenName;
 		return productsWasFound;
 	}
 
@@ -439,9 +439,9 @@ namespace WP
 
 		product.url = productUrl;
 		std::vector<std::string> descriptions = dataSelector.selectDataFromHTML("description", std::string(mem.memory));
-		for (size_t i = 0; i < descriptions.size(); i++)
+		for (const auto& description:descriptions)
 		{
-			product.description += descriptions[i];
+			product.description += description;
 		}
 		product.description = dataSelector.removeHTMLTags(product.description);
 		product.description = dataSelector.removeDoubleSpacesAndLF(product.description);
