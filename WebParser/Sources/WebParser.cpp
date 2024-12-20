@@ -107,7 +107,6 @@ namespace WP
 		{
 			pageCount = std::stoi(allPages.back());
 		}
-		//ParsingStatus::getInstance().setTotalPages(pageCount);
 		return pageCount;
 	}
 
@@ -117,7 +116,7 @@ namespace WP
 		std::vector<std::string> pageOption = dataSelector.selectDataFromHTML("PageStart", webPage);
 		if (pageOption.size() == 0)
 		{
-			//ErrorHandler::setErrorMessage("Cann`t get PageStart. Supossed what only 1 page exist in this category.");
+			std::cerr << "Cann`t get PageStart. Supossed what only 1 page exist in this category." << std::endl;
 			return false;
 		}
 		std::vector<std::vector<std::string>> pageOptionsVec;
@@ -140,11 +139,10 @@ namespace WP
 			localMem = webWorker->getWebPage(pageURL.c_str());
 		}
 		currPageProducts = parsePage(std::string(localMem.memory), categoryName, to_string(pageIndex));
-		//CurrentAppStatus::getInstance().newEventHappen(u8"Парсинг страницы окончен " + strPageIndex);
-		//ParsingStatus::getInstance().setParsedPages(1);
+		std::cout << u8"Парсинг страницы окончен " + strPageIndex << std::endl;
 		if (currPageProducts.size() == 0 && (failProdPage.empty() || (!failProdPage.empty() && failProdPage.front() != pageIndex)))
 		{
-			//ErrorHandler::setErrorMessage("Product not found " + pageURL);
+			std::cerr << "Product not found " + pageURL << std::endl;
 			tbb::spin_mutex::scoped_lock lock(mtx);
 			failProdPage.push(pageIndex);
 			std::this_thread::sleep_for(5000ms);
@@ -169,7 +167,7 @@ namespace WP
 			}
 			if (keyValueCount - 1 != delimCount)
 			{
-				//ErrorHandler::setErrorMessage("URL incorrect format:" + std::string(url));
+				std::cerr << "URL incorrect format:" + std::string(url) << std::endl;
 				return false;
 			}
 
@@ -202,10 +200,8 @@ namespace WP
 		for (const auto& product : oldProductsWitoutImage)
 			allProducts.push_back(product);
 		if (allProducts.size() == 0 && productsWasFound == false)
-			
-			;//ErrorHandler::setErrorMessage("can`t parse page:" + pageNumber + " something went wrong");
-		//ParsingStatus::getInstance().setParsedProducts((int)allProducts.size());
-			return allProducts;
+			std::cerr << "can`t parse page:" + pageNumber + " something went wrong" << std::endl;
+		return allProducts;
 
 	}
 
@@ -246,7 +242,7 @@ namespace WP
 				productsWasFound = true;
 				std::vector<std::string> refsTmp = dataSelector.selectDataFromHTML("ref", productCard);
 				if (refsTmp.size() != 1)
-					;//ErrorHandler::setErrorMessage("Canno`t get product ref from card");
+					std::cerr <<"Canno`t get product ref from card" << std::endl;
 				std::vector<std::string> pricesTmp = dataSelector.selectDataFromHTML("price_catalog", productCard);
 				if (parseRules.count("notInStock") != 0)
 				{
@@ -258,13 +254,13 @@ namespace WP
 				if (pricesTmp.size() > 0)
 					prices.push_back(pricesTmp.back());
 				else
-					;//ErrorHandler::setErrorMessage("Canno`t get product price from card");
+					std::cerr << "Canno`t get product price from card" << std::endl;
 			}
 		}
 		//backup code if no card found
 		else
 		{
-			//ErrorHandler::setErrorMessage("Canno`t get product cards");
+			std::cerr << "Canno`t get product cards" << std::endl;
 			refs = dataSelector.selectDataFromHTML("ref", webPage);
 			prices = dataSelector.selectDataFromHTML("price_catalog", webPage);
 			if (refs.size() > 0)
@@ -285,9 +281,7 @@ namespace WP
 			if (productCards.size() != 0)
 				productCardBlock = productCards.back();
 			else
-			{
-				;//ErrorHandler::setErrorMessage("Canno`t get products card block");
-			}
+				std::cerr << "Canno`t get products card block" << std::endl;
 		}
 		return productCardBlock;
 	}
@@ -393,7 +387,7 @@ namespace WP
 		ProductData product;
 		if (mem.size == 0)
 		{
-			//ErrorHandler::setErrorMessage("Canno`t get product page");
+			std::cerr << "Canno`t get product page" << std::endl;
 			return product;
 		}
 		std::vector<std::string>productIsNotAvailable = dataSelector.selectDataFromHTML("productIsNotAvailable", std::string(mem.memory));
@@ -403,14 +397,14 @@ namespace WP
 		std::vector<std::string> strPrices = dataSelector.selectDataFromHTML("price", std::string(mem.memory));
 		if (strPrices.size() == 0)
 		{
-			//ErrorHandler::setErrorMessage("Canno`t get product price");
+			std::cerr << "Canno`t get product price" << std::endl;
 			return product;
 		}
 		std::string strPrice = strPrices.back();
 		vector<std::string> protuctIds = dataSelector.selectDataFromHTML("productID", std::string(mem.memory));
 		if (protuctIds.size() == 0)
 		{
-			//ErrorHandler::setErrorMessage("Canno`t get product id");
+			std::cerr << "Canno`t get product id" << std::endl;
 			return product;
 		}
 		product.product_id = protuctIds.back();
@@ -420,7 +414,7 @@ namespace WP
 		std::vector<std::string> images = dataSelector.selectDataFromHTML("image", std::string(mem.memory));
 		if (images.size() == 0)
 		{
-			//ErrorHandler::setErrorMessage("Canno`t get product image url");
+			std::cerr << "Canno`t get product image url" << std::endl;
 			return product;
 		}
 		std::string image = images.back();
@@ -429,20 +423,11 @@ namespace WP
 		size_t spaceProsition;
 		while ((spaceProsition = strPrice.find(" ")) != std::string::npos)
 			strPrice = strPrice.erase(spaceProsition, 1);
-		product.price = to_string((int)ceil(stoi(strPrice)));// +stoi(strPrice) * _margin / 100));
-		//downloadImageProduct(webWorker, product, pathToImage);
-		//size_t lastDot = image.find_last_of('.');
-		//std::string imageExtension = image.substr(lastDot, image.size() - (image.size() - lastDot));
-		//pathToImage += imageExtension;
-		//product.pathToImage = pathToImage;
-		//webWorker->download_file(imageURL.c_str(), pathToImage.c_str());
-
+		product.price = to_string((int)ceil(stoi(strPrice)));
 		product.url = productUrl;
 		std::vector<std::string> descriptions = dataSelector.selectDataFromHTML("description", std::string(mem.memory));
 		for (const auto& description:descriptions)
-		{
 			product.description += description;
-		}
 		product.description = dataSelector.removeHTMLTags(product.description);
 		product.description = dataSelector.removeDoubleSpacesAndLF(product.description);
 		product.description = dataSelector.removeDublicateRow(product.description);
