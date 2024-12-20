@@ -15,13 +15,6 @@ if (WIN32)
         )
 endif ()
 
-#DataSelectorRule tests
-add_executable (dataSelectorRuleTest "dataSelectorRulesTest.cpp"   "${WEBPARSER_SOURCE_DIR}/DataSelectorRules.cpp")
-target_link_libraries(dataSelectorRuleTest PRIVATE Boost::unit_test_framework)
-target_include_directories(dataSelectorRuleTest PRIVATE "${HEADERS_DIR}")
-target_compile_features(dataSelectorRuleTest PRIVATE cxx_std_17)
-add_test(NAME dataSelectorRuleTest COMMAND dataSelectorRuleTest)
-
 include (CTest)
 enable_testing()
 

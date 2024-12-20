@@ -46,7 +46,6 @@ set (SOURCE_FILES
 "${CMAKE_CURRENT_SOURCE_DIR}/Sources/WebParser.cpp" 
 "${CMAKE_CURRENT_SOURCE_DIR}/Sources/WebWorker.cpp"  
 "${CMAKE_CURRENT_SOURCE_DIR}/Sources/DataSelector.cpp"
-"${CMAKE_CURRENT_SOURCE_DIR}/Sources/DataSelectorRules.cpp"
 )
 
 set (HEADERS_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Headers")

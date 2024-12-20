@@ -28,7 +28,6 @@
 #include "ProductData.h"
 #include "WebWorker.h"
 #include "DataSelector.h"
-#include "DataSelectorRules.h"
 //#include "ParsingStatus.h"
 
 //#include "ParsedData.h"
@@ -95,9 +94,8 @@ namespace WP
 		bool useParallel = false;
 		const char* sqliteDataBaseFileName = "ProductDataBase.db";
 		std::string tmpFolder = "";
-		DataSelectorRules datSelRul;
 		tbb::spin_mutex mtx;
-
+		std::unordered_map<std::string, std::vector<std::vector<std::string>>> parseRules;
 		queue<int> failProdPage;
 
 	};

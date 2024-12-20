@@ -4,7 +4,7 @@ namespace WP
 {
 	WebParser::WebParser(std::string site)
 	{
-		datSelRul.load(site);
+		parseRules = WP::DataSelector::loadRules(site);
 		//ParsingStatus::getInstance().clearData();
 		domenName = "https://" + site;
 		_site = getSiteId(site);
@@ -26,9 +26,9 @@ namespace WP
 	{
 		WebWorker webWorker = WebWorker("Mozilla / 5.0 (Windows NT 6.1; WOW64; rv:57.0) Gecko / 20100101 Firefox / 57.0");
 		MemoryStruct mem = webWorker.getWebPage(url.c_str());
-		DataSelector dataSelector;
-		std::vector<std::string> categories = dataSelector.selectDataFromHTML(datSelRul.getRule("categories"), std::string(mem.memory));
-		std::vector<std::string> categoriesName = dataSelector.selectDataFromHTML(datSelRul.getRule("categoryName"), std::string(mem.memory));
+		DataSelector dataSelector = DataSelector(parseRules);
+		std::vector<std::string> categories = dataSelector.selectDataFromHTML("categories", std::string(mem.memory));
+		std::vector<std::string> categoriesName = dataSelector.selectDataFromHTML("categoryName", std::string(mem.memory));
 		if (categories.size() != categoriesName.size())
 			//ErrorHandler::setErrorMessage(u8"Не удалось выбрать все категории");
 			for (size_t i = 0; i < categories.size(); i++)
@@ -89,8 +89,8 @@ namespace WP
 
 	std::string WebParser::generateURL(std::string startUrl)
 	{
-		if (datSelRul.ruleExist("productQuantityOnPage") == 1)
-			startUrl = startUrl + '?' + datSelRul.getRule("productQuantityOnPage").back().back() + "&";
+		if (parseRules.count("productQuantityOnPage") == 1)
+			startUrl = startUrl + '?' + parseRules["productQuantityOnPage"].back().back() + "&";
 		else
 			startUrl = startUrl + '?';
 		return startUrl;
@@ -98,10 +98,10 @@ namespace WP
 	int WebParser::getNumberOfPages(std::string webPage)
 	{
 		int pageCount = 1;
-		DataSelector dataSelector;
-		std::vector<std::string> allPages = dataSelector.selectDataFromHTML(datSelRul.getRule("Pagination"), webPage);
+		DataSelector dataSelector = DataSelector(parseRules);
+		std::vector<std::string> allPages = dataSelector.selectDataFromHTML("Pagination", webPage);
 		bool pageOptionIsSet = true;
-		if (datSelRul.ruleExist("PageStart") == 1)
+		if (parseRules.count("PageStart") == 1)
 			pageOptionIsSet = setPageOption(webPage);
 		if (allPages.size() != 0 && pageOptionIsSet)
 		{
@@ -113,8 +113,8 @@ namespace WP
 
 	bool WebParser::setPageOption(std::string webPage)
 	{
-		DataSelector dataSelector;
-		std::vector<std::string> pageOption = dataSelector.selectDataFromHTML(datSelRul.getRule("PageStart"), webPage);
+		DataSelector dataSelector = DataSelector(parseRules);
+		std::vector<std::string> pageOption = dataSelector.selectDataFromHTML("PageStart", webPage);
 		if (pageOption.size() == 0)
 		{
 			//ErrorHandler::setErrorMessage("Cann`t get PageStart. Supossed what only 1 page exist in this category.");
@@ -122,7 +122,7 @@ namespace WP
 		}
 		std::vector<std::vector<std::string>> pageOptionsVec;
 		pageOptionsVec.push_back(pageOption);
-		datSelRul.getRule("Page") = pageOptionsVec;
+		parseRules["Page"] = pageOptionsVec;
 		return true;
 	}
 
@@ -134,7 +134,7 @@ namespace WP
 		std::string pageURL = categoryURL;
 		if (pageIndex > 1)
 		{
-			pageURL = categoryURL + datSelRul.getRule("Page").back().back() + strPageIndex;
+			pageURL = categoryURL + parseRules["Page"].back().back() + strPageIndex;
 			if (urlParamIsValid(pageURL) == false)
 				return currPageProducts;
 			localMem = webWorker->getWebPage(pageURL.c_str());
@@ -237,20 +237,20 @@ namespace WP
 	{
 		bool productsWasFound = false;
 		std::string productCardBlock = getProductCardBlock(webPage);
-		DataSelector dataSelector = DataSelector();
-		std::vector<std::string> productCards = dataSelector.selectDataFromHTML(datSelRul.getRule("productCard"), productCardBlock);
+		DataSelector dataSelector = DataSelector(parseRules);
+		std::vector<std::string> productCards = dataSelector.selectDataFromHTML("productCard", productCardBlock);
 		if (productCards.size() > 0)
 		{
 			for (size_t i = 0; i < productCards.size(); i++)
 			{
 				productsWasFound = true;
-				std::vector<std::string> refsTmp = dataSelector.selectDataFromHTML(datSelRul.getRule("ref"), productCards[i]);
+				std::vector<std::string> refsTmp = dataSelector.selectDataFromHTML("ref", productCards[i]);
 				if (refsTmp.size() != 1)
 					;//ErrorHandler::setErrorMessage("Canno`t get product ref from card");
-				std::vector<std::string> pricesTmp = dataSelector.selectDataFromHTML(datSelRul.getRule("price_catalog"), productCards[i]);
-				if (datSelRul.ruleExist("notInStock") != 0)
+				std::vector<std::string> pricesTmp = dataSelector.selectDataFromHTML("price_catalog", productCards[i]);
+				if (parseRules.count("notInStock") != 0)
 				{
-					std::vector<std::string> notInStock = dataSelector.selectDataFromHTML(datSelRul.getRule("notInStock"), productCards[i]);
+					std::vector<std::string> notInStock = dataSelector.selectDataFromHTML("notInStock", productCards[i]);
 					if (notInStock.size() >= 1)
 						continue;
 				}
@@ -265,8 +265,8 @@ namespace WP
 		else
 		{
 			//ErrorHandler::setErrorMessage("Canno`t get product cards");
-			refs = dataSelector.selectDataFromHTML(datSelRul.getRule("ref"), webPage);
-			prices = dataSelector.selectDataFromHTML(datSelRul.getRule("price_catalog"), webPage);
+			refs = dataSelector.selectDataFromHTML("ref", webPage);
+			prices = dataSelector.selectDataFromHTML("price_catalog", webPage);
 			if (refs.size() > 0)
 				productsWasFound = true;
 		}
@@ -278,10 +278,10 @@ namespace WP
 	std::string WebParser::getProductCardBlock(std::string webPage)
 	{
 		std::string productCardBlock = webPage;
-		if (datSelRul.ruleExist("productCardBlock") != 0)
+		if (parseRules.count("productCardBlock") != 0)
 		{
-			DataSelector dataSelector = DataSelector();
-			std::vector<std::string> productCards = dataSelector.selectDataFromHTML(datSelRul.getRule("productCardBlock"), webPage);
+			DataSelector dataSelector = DataSelector(parseRules);
+			std::vector<std::string> productCards = dataSelector.selectDataFromHTML("productCardBlock", webPage);
 			if (productCards.size() != 0)
 				productCardBlock = productCards.back();
 			else
@@ -389,35 +389,35 @@ namespace WP
 	ProductData WebParser::getProductData(WebWorker* webWorker, std::string productUrl, std::string pathToImage)
 	{
 		MemoryStruct mem = webWorker->getWebPage(productUrl.c_str());
-		DataSelector dataSelector;
+		DataSelector dataSelector = DataSelector(parseRules);
 		ProductData product;
 		if (mem.size == 0)
 		{
 			//ErrorHandler::setErrorMessage("Canno`t get product page");
 			return product;
 		}
-		std::vector<std::string>productIsNotAvailable = dataSelector.selectDataFromHTML(datSelRul.getRule("productIsNotAvailable"), std::string(mem.memory));
+		std::vector<std::string>productIsNotAvailable = dataSelector.selectDataFromHTML("productIsNotAvailable", std::string(mem.memory));
 		if (productIsNotAvailable.size() > 0)
 			return product;
-		product.name = dataSelector.selectDataFromHTML(datSelRul.getRule("name"), std::string(mem.memory)).back();
-		std::vector<std::string> strPrices = dataSelector.selectDataFromHTML(datSelRul.getRule("price"), std::string(mem.memory));
+		product.name = dataSelector.selectDataFromHTML("name", std::string(mem.memory)).back();
+		std::vector<std::string> strPrices = dataSelector.selectDataFromHTML("price", std::string(mem.memory));
 		if (strPrices.size() == 0)
 		{
 			//ErrorHandler::setErrorMessage("Canno`t get product price");
 			return product;
 		}
 		std::string strPrice = strPrices.back();
-		vector<std::string> protuctIds = dataSelector.selectDataFromHTML(datSelRul.getRule("productID"), std::string(mem.memory));
+		vector<std::string> protuctIds = dataSelector.selectDataFromHTML("productID", std::string(mem.memory));
 		if (protuctIds.size() == 0)
 		{
 			//ErrorHandler::setErrorMessage("Canno`t get product id");
 			return product;
 		}
 		product.product_id = protuctIds.back();
-		vector<string> manufacturers = dataSelector.selectDataFromHTML(datSelRul.getRule("manufacturer"), std::string(mem.memory));
+		vector<string> manufacturers = dataSelector.selectDataFromHTML("manufacturer", std::string(mem.memory));
 		if (!empty(manufacturers))
 			product.manufacturer = manufacturers.back();
-		std::vector<std::string> images = dataSelector.selectDataFromHTML(datSelRul.getRule("image"), std::string(mem.memory));
+		std::vector<std::string> images = dataSelector.selectDataFromHTML("image", std::string(mem.memory));
 		if (images.size() == 0)
 		{
 			//ErrorHandler::setErrorMessage("Canno`t get product image url");
@@ -438,7 +438,7 @@ namespace WP
 		//webWorker->download_file(imageURL.c_str(), pathToImage.c_str());
 
 		product.url = productUrl;
-		std::vector<std::string> descriptions = dataSelector.selectDataFromHTML(datSelRul.getRule("description"), std::string(mem.memory));
+		std::vector<std::string> descriptions = dataSelector.selectDataFromHTML("description", std::string(mem.memory));
 		for (size_t i = 0; i < descriptions.size(); i++)
 		{
 			product.description += descriptions[i];
