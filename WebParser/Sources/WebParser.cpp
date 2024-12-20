@@ -271,7 +271,7 @@ namespace WP
 				productsWasFound = true;
 		}
 		for (auto& ref:refs)
-			ref += domenName;
+			ref = domenName + ref;
 		return productsWasFound;
 	}
 

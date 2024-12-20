@@ -48,6 +48,8 @@ std::unordered_map<std::string, std::string> getArguments(int argc, char* argv[]
 
 int main(int argc, char* argv[])
 {
+	setlocale(LC_ALL, "ru_RU.utf8");
+	SetConsoleOutputCP(65001);
 	std::unordered_map<std::string, std::string> argsMap = getArguments(argc, argv);
 	if (argsMap.count("help") == 1)
 		printHelp();
