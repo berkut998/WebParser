@@ -76,7 +76,7 @@ BOOST_AUTO_TEST_CASE(test_addGetUpdateProduct)
 	product2.price = "150";
 	db.updateProduct(product2,0);
 	WP::ProductData product3 = db.getProduct(product2.url);
-	BOOST_TEST(product3 != product2);
+	BOOST_TEST(product3 == product2);
 	std::remove("dataBase.db");
 }
 
@@ -92,7 +92,7 @@ BOOST_AUTO_TEST_CASE(test_addExistProduct)
 	db.productExist(product.url);
 	std::remove("dataBase.db");
 }
-
+ //TODO remove != not sure what work correctly
 BOOST_AUTO_TEST_CASE(test_getImage)
 {
 	int errorCode = 0;
